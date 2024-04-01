@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+
+    #calculator {
+      max-width: 300px;
+      margin: auto;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+    }
+
+    #display {
+      height: 40px;
+      font-size: 1.5em;
+      text-align: right;
+      padding: 0 10px;
+      margin-bottom: 10px;
+      background-color: #333;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 5px;
+    }
+
+    button {
+      width: 50px;
+      height: 50px;
+      font-size: 1em;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    button.operator {
+      background-color: #ff8c00;
+      color: #fff;
+    }
+
+    button.double {
+      grid-column: span 2;
+    }
+
+    button.clear {
+      background-color: #ff3333;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+<div id="calculator">
+  <div id="display">0</div>
+  <button class="clear" onclick="clearDisplay()">C</button>
+  <button onclick="appendNumber('7')">7</button>
+  <button onclick="appendNumber('8')">8</button>
+  <button onclick="appendNumber('9')">9</button>
+  <button class="operator" onclick="setOperator('/')">/</button>
+
+  <button onclick="appendNumber('4')">4</button>
+  <button onclick="appendNumber('5')">5</button>
+  <button onclick="appendNumber('6')">6</button>
+  <button class="operator" onclick="setOperator('*')">*</button>
+
+  <button onclick="appendNumber('1')">1</button>
+  <button onclick="appendNumber('2')">2</button>
+  <button onclick="appendNumber('3')">3</button>
+  <button class="operator" onclick="setOperator('-')">-</button>
+
+  <button class="double" onclick="appendNumber('0')">0</button>
+  <button onclick="calculateResult()">=</button>
+  <button class="operator" onclick="setOperator('+')">+</button>
+</div>
+
+<script>
+  let displayValue = '0';
+  let operator = null;
+  let waitingForSecondOperand = false;
+
+  function updateDisplay() {
+    document.getElementById('display').innerText = displayValue;
+  }
+
+  function appendNumber(number) {
+    if (waitingForSecondOperand) {
+      displayValue = number;
+      waitingForSecondOperand = false;
+    } else {
+      displayValue = (displayValue === '0' ? '' : displayValue) + number;
+    }
+    updateDisplay();
+  }
+
+  function setOperator(op) {
+    if (operator !== null && !waitingForSecondOperand) {
+      calculateResult();
+    }
+    operator = op;
+    waitingForSecondOperand = true;
+  }
+
+  function clearDisplay() {
+    displayValue = '0';
+    operator = null;
+    waitingForSecondOperand = false;
+    updateDisplay();
+  }
+
+  function calculateResult() {
+    const currentValue = parseFloat(displayValue);
+    const previousValue = parseFloat(displayValue);
+
+    if (operator === '+') {
+      displayValue = previousValue + currentValue;
+    } else if (operator === '-') {
+      displayValue = previousValue - currentValue;
+    } else if (operator === '*') {
+      displayValue = previousValue * currentValue;
+    } else if (operator === '/') {
+      if (currentValue !== 0) {
+        displayValue = previousValue / currentValue;
+      } else {
+        displayValue = 'Error';
+      }
+    }
+
+    operator = null;
+    waitingForSecondOperand = false;
+    updateDisplay();
+  }
+</script>
+
+</body>
+</html>
